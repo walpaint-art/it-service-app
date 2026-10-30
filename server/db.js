@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const initSqlJs = require('sql.js');
 const bcrypt = require('bcryptjs');
 const { DB_PATH, SEED_DB_PATH, SEED_DB_B64_PATH } = require('./lib/paths');
@@ -195,14 +196,18 @@ function migrateSchema() {
 }
 
 function seedDefaultData() {
-  const admin = rawGet('SELECT id FROM users WHERE username = ?', ['admin']);
-  if (!admin) {
-    const hash = bcrypt.hashSync('admin123', 10);
+  // Só cria o admin inicial quando não existe nenhum usuário (instalação nova)
+  const userCount = rawGet('SELECT COUNT(*) AS c FROM users');
+  if (!userCount || userCount.c === 0) {
+    const initialPassword =
+      process.env.INITIAL_ADMIN_PASSWORD || crypto.randomBytes(9).toString('base64url');
+    const hash = bcrypt.hashSync(initialPassword, 10);
     rawRun(
       `INSERT INTO users (username, password_hash, full_name, role, company_name, whatsapp_number, theme)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       ['admin', hash, 'Técnico Informática', 'admin', 'Sua Empresa TI', '', 'light']
     );
+    console.log(`Usuário "admin" criado. Senha inicial: ${initialPassword}`);
   }
 
   const serviceCount = rawGet('SELECT COUNT(*) AS c FROM services');
