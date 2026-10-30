@@ -353,7 +353,7 @@ export default function Clientes() {
                         className="input"
                         required
                         inputMode="tel"
-                        placeholder="(62) 99273-3000"
+                        placeholder="(11) 99999-9999"
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
                         onBlur={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })}
@@ -364,7 +364,7 @@ export default function Clientes() {
                       <input
                         className="input"
                         inputMode="tel"
-                        placeholder="(62) 99273-3000"
+                        placeholder="(11) 99999-9999"
                         value={form.whatsapp}
                         onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
                         onBlur={(e) => setForm({ ...form, whatsapp: formatPhone(e.target.value) })}
