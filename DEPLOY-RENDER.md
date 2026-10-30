@@ -17,6 +17,19 @@ Aplicação preparada para rodar como **Web Service Node** no Render (plano **Fr
 - `DB_PATH`, `UPLOADS_DIR` e `SEED_DB_B64_PATH` configuráveis por variável de ambiente.
 - Script para redefinir senha: `server/scripts/set-password.js`.
 
+## Backup automático (dados sobrevivem ao Free)
+
+Como o plano Free não tem disco, o servidor mantém uma cópia do banco e dos uploads num **repositório privado do GitHub** e restaura tudo no boot:
+
+- Repositório de dados: `walpaint-art/it-service-app-data` (privado)
+- Variáveis no Render: `GITHUB_STORE_REPO`, `GITHUB_STORE_BRANCH` e `GITHUB_STORE_TOKEN` (secret)
+- Após cada gravação, o envio é agendado (15 s de debounce) e feito num único commit.
+- No boot, se o disco estiver vazio: banco restaurado do GitHub; se o repositório estiver vazio, cai para o secret file.
+- Se a restauração falhar, o servidor **não** sobrescreve o backup remoto.
+- Arquivos acima de 45 MB (ex.: vídeos grandes) são ignorados no backup.
+
+Para conferir: https://github.com/walpaint-art/it-service-app-data
+
 ## Segredos (nunca versionar)
 
 Estes arquivos/pastas ficam fora do repositório (ver `.gitignore`):

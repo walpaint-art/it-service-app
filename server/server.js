@@ -8,6 +8,7 @@ const fs = require('fs');
 const { init } = require('./db');
 const { syncAllOrderTotals } = require('./lib/order-totals');
 const { authenticate } = require('./middleware/auth');
+const remoteStore = require('./lib/remote-store');
 
 const authRoutes = require('./routes/auth');
 const customersRoutes = require('./routes/customers');
@@ -83,8 +84,14 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message || 'Erro interno do servidor' });
 });
 
-// Inicializa o banco e só então começa a aceitar requisições
-init()
+// Restaura o backup remoto (se configurado) e inicializa o banco antes de aceitar requisições
+remoteStore
+  .restore()
+  .catch((err) => {
+    // Sem restauração confiável não sobrescrevemos o backup remoto
+    console.error('⚠️  Falha ao restaurar backup remoto:', err.message);
+  })
+  .then(() => init())
   .then(() => {
     // Recalcula os totais das OS (linhas riscadas deixam de ser cobradas)
     const synced = syncAllOrderTotals();
@@ -94,6 +101,9 @@ init()
       console.log(`🖼️  Uploads: ${UPLOADS_DIR}`);
       console.log(`🌐 Acesse: http://localhost:${PORT}`);
       console.log(`🧾 Totais recalculados em ${synced} OS`);
+      if (remoteStore.enabled()) {
+        console.log('☁️  Backup automático no GitHub ativado.');
+      }
       if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
         console.warn('⚠️  JWT_SECRET não definido: usando o segredo padrão (inseguro em produção)!');
       }
@@ -103,5 +113,13 @@ init()
     console.error('❌ Falha ao inicializar o banco de dados:', err);
     process.exit(1);
   });
+
+if (remoteStore.enabled()) {
+  for (const signal of ['SIGTERM', 'SIGINT']) {
+    process.on(signal, () => {
+      remoteStore.shutdown().finally(() => process.exit(0));
+    });
+  }
+}
 
 module.exports = app;

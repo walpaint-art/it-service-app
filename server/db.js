@@ -3,6 +3,7 @@ const path = require('path');
 const initSqlJs = require('sql.js');
 const bcrypt = require('bcryptjs');
 const { DB_PATH, SEED_DB_PATH, SEED_DB_B64_PATH } = require('./lib/paths');
+const remoteStore = require('./lib/remote-store');
 
 const dbPath = DB_PATH;
 
@@ -44,6 +45,7 @@ function saveDbToFile() {
   const tmpPath = `${dbPath}.tmp`;
   fs.writeFileSync(tmpPath, data);
   fs.renameSync(tmpPath, dbPath);
+  remoteStore.schedule();
 }
 
 function rawAll(sql, params = []) {
