@@ -3,6 +3,8 @@
 Aplicação web completa para técnicos de informática que atendem pequenas e médias empresas (PMEs) sem setor de TI. Funciona em PC, celular e tablet (design responsivo e PWA-ready).
 
 > 🚀 **Deploy no Render:** instruções completas em [DEPLOY-RENDER.md](./DEPLOY-RENDER.md).
+>
+> **App online:** https://it-service-app-oei4.onrender.com
 
 ## 📋 Funcionalidades
 

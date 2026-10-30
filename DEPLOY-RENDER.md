@@ -77,7 +77,7 @@ Para migrar para Starter depois: adicione um disco em `/var/data` e as variávei
 
 ## Primeiro acesso
 
-- URL: `https://it-service-app.onrender.com`
+- URL: `https://it-service-app-oei4.onrender.com`
 - Usuário: `admin`
 - Senha: a definida no banco enviado no secret file.
 
