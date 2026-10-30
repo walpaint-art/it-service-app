@@ -1,0 +1,13 @@
+{
+  "name": "it-service-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de atendimento para técnico em informática",
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "scripts": {
+    "build": "npm install --prefix server && npm install --include=dev --prefix client && npm run build --prefix client",
+    "start": "node server/server.js"
+  }
+}

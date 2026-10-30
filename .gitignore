@@ -1,0 +1,18 @@
+# Dependências
+node_modules/
+
+# Build do frontend (gerado no deploy)
+client/dist/
+
+# Variáveis de ambiente locais
+.env
+.env.*
+
+# Banco com dados de clientes (nunca vai para o repositório)
+server/database.sqlite
+server/database.sqlite.tmp
+server/database.backup-*.sqlite
+server/database.seed.b64
+
+# Arquivos de importação com dados de clientes
+server/imports/

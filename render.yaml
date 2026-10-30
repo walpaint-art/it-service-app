@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: it-service-app
+    runtime: node
+    plan: free
+    region: virginia
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install --prefix server && npm install --include=dev --prefix client && npm run build --prefix client
+    startCommand: node server/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
